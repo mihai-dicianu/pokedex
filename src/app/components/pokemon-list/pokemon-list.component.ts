@@ -1,6 +1,6 @@
-import { Component, input } from '@angular/core';
-import { SimplePokemon } from 'types/simple-pokemon.type';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
+import { NamedAPIResource } from 'pokeapi-js-wrapper';
 import { injectTwHostClass } from 'util/inject-tw-host-class.util';
 import { PokemonListItemComponent } from '../pokemon-list-item/pokemon-list-item.component';
 
@@ -20,21 +20,39 @@ import { PokemonListItemComponent } from '../pokemon-list-item/pokemon-list-item
             </div>
         </header>
 
-        <div class="section-wrapper max-h-[calc(100%-76px)] flex flex-grow p-8 pt-0 -mt-12 bg-[#d71f06] rounded-bl-4xl">
+        <div class="section-wrapper max-h-[calc(100%-76px)] flex flex-col flex-grow p-8 pt-0 -mt-12 bg-[#d71f06] rounded-bl-4xl">
             <section class="flex flex-col bg-black text-white flex-grow overflow-auto py-12 px-2 rounded-4xl rounded-bl-2xl rounded-tr-none shadow-[inset_0_-1px_2px_3px_#808080]">
                 @for (pokemon of pokemonList(); let index = $index; track pokemon.name) {
-                    <app-pokemon-list-item [index]="$index" [pokemon]="pokemon" />
+                    <app-pokemon-list-item [index]="$index + offset()" [pokemon]="pokemon" />
                 }
+
             </section>
+            <div class="flex flex-row justify-between items-center mt-4 text-white">
+                <button class="big-button blue" (click)="onPreviousPage.emit()">
+                    <span class="text-2xl font-bold">
+                        -
+                    </span>
+                </button>
+                Showing {{ offset() + 1 }} - {{ offset() + 20 }} of {{ count() }}
+                <button class="big-button blue" (click)="onNextPage.emit()">
+                    <span class="text-2xl font-bold">+</span>
+                </button>
+            </div>
         </div>
 
-        <footer></footer>
+        <footer>
+        </footer>
     `,
     styleUrl: './pokemon-list.component.scss',
     imports: [PokemonListItemComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonListComponent {
-    readonly pokemonList = input<SimplePokemon[]>([]);
+    readonly pokemonList = input<NamedAPIResource[]>([]);
+    readonly offset = input<number>(0);
+    readonly count = input<number>(0);
+    readonly onPreviousPage = output();
+    readonly onNextPage = output();
 
     constructor() {
         injectTwHostClass(() => 'flex flex-col');
