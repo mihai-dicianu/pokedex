@@ -1,6 +1,4 @@
 import { Component, input } from '@angular/core';
-import { Pokemon } from 'types/pokemon.type';
-
 import { Pokemon } from 'pokeapi-js-wrapper';
 import { injectTwHostClass } from 'util/inject-tw-host-class.util';
 import { TypewriterComponent } from '../../typewriter/typewriter.component';
