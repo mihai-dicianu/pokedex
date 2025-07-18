@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Pokemon } from 'pokeapi-js-wrapper';
+import { Pokedex, Pokemon } from 'pokeapi-js-wrapper';
 import { injectTwHostClass } from 'util/inject-tw-host-class.util';
 import { PokemonInfoComponent } from '../../components/pokemon-info/pokemon-info.component';
 
@@ -33,14 +33,19 @@ import { PokemonInfoComponent } from '../../components/pokemon-info/pokemon-info
 export class PokemonDetailContainer implements OnInit{
     private readonly route = inject(ActivatedRoute);
     readonly pokemon = signal<Pokemon | undefined>(undefined);
+    readonly pokedex = new Pokedex();
 
     constructor() {
         injectTwHostClass(() => 'flex flex-col gap-4 p-5 pt-20');
     }
 
     ngOnInit(): void {
-        this.route.data.subscribe(data => {
-            this.pokemon.set(data['pokemon']);
+        this.route.paramMap.subscribe(params => {
+            const pokemonId = params.get('pokemonId');
+            this.pokedex.getPokemonByName(pokemonId).then(pokemon => {
+                this.pokemon.set(pokemon);
+            });
         });
+
     }
 }
