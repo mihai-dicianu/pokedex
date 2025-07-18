@@ -7,7 +7,12 @@ import { TypewriterComponent } from '../../typewriter/typewriter.component';
     selector: 'app-pokemon-info',
     imports: [TypewriterComponent],
     template: `
-        <app-typewriter [text]="pokemonInfo()?.name" />
+        <app-typewriter class="text-4xl font-bold block pb-4" [text]="pokemonInfo()?.name" />
+        <app-typewriter [text]="'height: ' + pokemonInfo()?.height.toString() + ' dm'" />
+        <app-typewriter [text]="'weight: ' + pokemonInfo()?.weight.toString() + ' hg'" />
+        @if (pokemonInfo()?.base_experience) {
+            <app-typewriter [text]="'base XP: ' + pokemonInfo()?.base_experience.toString()" />
+        }
 
         <div class="absolute top-0 right-0 h-24 w-24">
             @if (pokemonInfo(); as pokemonInfo) {
