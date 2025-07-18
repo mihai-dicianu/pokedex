@@ -1,6 +1,7 @@
 import { Component, input } from '@angular/core';
 import { Pokemon } from 'types/pokemon.type';
 
+import { injectTwHostClass } from 'util/inject-tw-host-class.util';
 import { TypewriterComponent } from '../../typewriter/typewriter.component';
 
 @Component({
@@ -9,17 +10,20 @@ import { TypewriterComponent } from '../../typewriter/typewriter.component';
     template: `
         <app-typewriter [text]="pokemonInfo()?.name" />
 
-        <div class="sprite-wrapper">
+        <div class="absolute top-0 right-0 h-24 w-24">
             @if (pokemonInfo(); as pokemonInfo) {
                 <div
-                    class="sprite"
+                    class="h-full w-full bg-center bg-contain [image-rendering:pixelated] grayscale brightness-150"
                     [style.background-image]="'url(' + pokemonInfo.sprites['front_default'] + ')'"
                 ></div>
             }
         </div>
     `,
-    styleUrl: './pokemon-info.component.scss',
 })
 export class PokemonInfoComponent {
     readonly pokemonInfo = input<Pokemon>();
+
+    constructor() {
+        injectTwHostClass(() => 'relative block w-full h-full');
+    }
 }
