@@ -6,12 +6,14 @@ import { SimplePokemon } from 'types/simple-pokemon.type';
 @Component({
     selector: 'app-pokemon-list-item',
     template: `
-        <a [routerLink]="['', { outlets: { detail: [pokemon().name] } }]">
+        <a 
+            [routerLink]="['', { outlets: { detail: [pokemon().name] } }]"
+            class="block p-2 rounded text-white no-underline hover:bg-gray-200/30"
+        >
             {{ index() + 1 }}
             {{ pokemon().name | uppercase }}
         </a>
     `,
-    styleUrl: './pokemon-list-item.component.scss',
     imports: [RouterLink, UpperCasePipe],
 })
 export class PokemonListItemComponent {
