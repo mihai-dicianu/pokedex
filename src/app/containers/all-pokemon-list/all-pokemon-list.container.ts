@@ -1,7 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 
 import { NamedAPIResource, Pokedex } from 'pokeapi-js-wrapper';
-import { PokemonService } from 'util/pokemon.service';
 import { PokemonListComponent } from '../../components/pokemon-list/pokemon-list.component';
 
 @Component({
@@ -18,7 +17,7 @@ export class AllPokemonListContainer implements OnInit{
 
     allPokemon = signal<NamedAPIResource[]>([]);
 
-    constructor(private readonly pokemonService: PokemonService) {
+    constructor() {
         this.pokedex.getPokemonsList({ offset: 0, limit: 20 }).then(response => {
             console.log(response);
             this.allPokemon.set(response.results);
