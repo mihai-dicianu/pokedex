@@ -14,4 +14,5 @@ body {
     background: url('assets/background.png');
     background-position: center;
     background-size: cover;
+    font-family: 'Space Mono', 'Courier New', 'Monaco', 'Menlo', monospace;
 }
