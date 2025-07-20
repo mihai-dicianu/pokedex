@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Ability, Pokedex, Pokemon } from 'pokeapi-js-wrapper';
 import { EnglishContentPipe } from 'util/english-content.pipe';
@@ -13,19 +13,10 @@ import { injectTwHostClass } from 'util/inject-tw-host-class.util';
     @for (ability of abilities; track $index) {
       <div class="flex flex-col items-start gap-2">
 
+      <div class="flex items-baseline gap-2">
         <span class="text-2xl font-bold">{{ability.name.replace('-', ' ') | titlecase}}</span>
-
-        <div class="flex items-start gap-2">
-          <span class="bg-white text-black rounded-full px-2">i</span>
-          <p>{{ability.effect_entries | englishContent:'short_effect'}}</p>
-        </div>
-        <div class="flex flex-col items-start gap-2">
-          <div class="flex items-start gap-2">
-            <span class="bg-white text-black rounded-full px-2">i</span> 
-            <p>Navigate to pokemon which also have {{ability.name}}.
-
-              <select (change)="onPokemonSelect($event)" class="bg-black underline text-white inline-block">
-                <option selected disabled>Select pokemon</option>
+        <select (change)="onPokemonSelect($event)" class="bg-black underline text-white inline-block">
+                <option selected disabled>See other pokemon</option>
                 @for (pokemon of ability.pokemon; track pokemon.pokemon.name) {
                   @if (pokemon.pokemon.name !== this.pokemon().name) {
     
@@ -38,8 +29,11 @@ import { injectTwHostClass } from 'util/inject-tw-host-class.util';
                   }
                 }
               </select>
-            </p>
-          </div>
+      </div>
+
+        <div class="flex items-start gap-2">
+          <span class="bg-white text-black rounded-full px-2">i</span>
+          <p>{{ability.effect_entries | englishContent:'short_effect'}}</p>
         </div>
 
       </div>
