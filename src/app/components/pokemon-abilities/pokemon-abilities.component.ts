@@ -13,10 +13,10 @@ import { injectTwHostClass } from 'util/inject-tw-host-class.util';
     @for (ability of abilities; track $index) {
       <div class="flex flex-col items-start gap-2">
 
-      <div class="flex items-baseline gap-2">
+      <div class="flex flex-wrap items-baseline gap-2">
         <span class="text-2xl font-bold">{{ability.name.replace('-', ' ') | titlecase}}</span>
         <select (change)="onPokemonSelect($event)" class="bg-black underline text-white inline-block">
-                <option selected disabled>See other pokemon</option>
+                <option selected disabled>Other pokemon</option>
                 @for (pokemon of ability.pokemon; track pokemon.pokemon.name) {
                   @if (pokemon.pokemon.name !== this.pokemon().name) {
     
