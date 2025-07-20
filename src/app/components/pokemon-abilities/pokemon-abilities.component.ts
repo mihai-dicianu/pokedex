@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Ability, Pokedex, Pokemon } from 'pokeapi-js-wrapper';
 import { EnglishContentPipe } from 'util/english-content.pipe';
@@ -9,11 +9,11 @@ import { injectTwHostClass } from 'util/inject-tw-host-class.util';
   selector: 'app-pokemon-abilities',
   imports: [CommonModule, EnglishContentPipe, RouterModule],
   template: `
-  <div class="flex flex-col gap-2 justify-start items-start">
+  <div class="flex flex-col gap-4 justify-start items-start">
     @for (ability of abilities; track $index) {
       <div class="flex flex-col items-start gap-2">
 
-        <span class="text-2xl">{{ability.name}}</span>
+        <span class="text-2xl font-bold">{{ability.name.replace('-', ' ') | titlecase}}</span>
 
         <div class="flex items-start gap-2">
           <span class="bg-white text-black rounded-full px-2">i</span>
@@ -22,31 +22,31 @@ import { injectTwHostClass } from 'util/inject-tw-host-class.util';
         <div class="flex flex-col items-start gap-2">
           <div class="flex items-start gap-2">
             <span class="bg-white text-black rounded-full px-2">i</span> 
-            <p>Navigate to pokemon which also have {{ability.name}}</p>
-          </div>
-          <select (change)="onPokemonSelect($event)" class="bg-black text-white">
-            <option selected disabled>Select pokemon</option>
-            @for (pokemon of ability.pokemon; track pokemon.pokemon.name) {
-              @if (pokemon.pokemon.name !== this.pokemon().name) {
+            <p>Navigate to pokemon which also have {{ability.name}}.
 
-                <option 
-                  (click)="navigateToPokemon(pokemon.pokemon.name)" 
-                  [value]="pokemon.pokemon.name"
-                >
-                  {{pokemon.pokemon.name}}
-                </option>
-              }
-            }
-          </select>
+              <select (change)="onPokemonSelect($event)" class="bg-black underline text-white inline-block">
+                <option selected disabled>Select pokemon</option>
+                @for (pokemon of ability.pokemon; track pokemon.pokemon.name) {
+                  @if (pokemon.pokemon.name !== this.pokemon().name) {
+    
+                    <option 
+                      (click)="navigateToPokemon(pokemon.pokemon.name)" 
+                      [value]="pokemon.pokemon.name"
+                    >
+                      {{pokemon.pokemon.name}}
+                    </option>
+                  }
+                }
+              </select>
+            </p>
+          </div>
         </div>
-        <br>
 
       </div>
     }
   </div>
 
   `,
-  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonAbilitiesComponent {
   readonly pokemon = input.required<Pokemon>();

@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { Pokemon } from 'pokeapi-js-wrapper';
 import { injectTwHostClass } from 'util/inject-tw-host-class.util';
@@ -5,9 +6,9 @@ import { TypewriterComponent } from '../../typewriter/typewriter.component';
 
 @Component({
     selector: 'app-pokemon-info',
-    imports: [TypewriterComponent],
+    imports: [CommonModule, TypewriterComponent],
     template: `
-        <app-typewriter class="text-4xl font-bold block pb-4" [text]="pokemonInfo()?.name" />
+        <app-typewriter class="text-4xl font-bold block pb-4" [text]="pokemonInfo()?.name.replace('-', ' ') | titlecase" />
         <app-typewriter [text]="'height: ' + pokemonInfo()?.height.toString() + ' dm'" />
         <app-typewriter [text]="'weight: ' + pokemonInfo()?.weight.toString() + ' hg'" />
         @if (pokemonInfo()?.base_experience) {
