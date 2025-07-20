@@ -28,6 +28,6 @@ export class PokemonInfoComponent {
     readonly pokemonInfo = input<Pokemon>();
 
     constructor() {
-        injectTwHostClass(() => 'relative block w-full h-full');
+        injectTwHostClass(() => 'relative block w-full h-full max-w-full');
     }
 }
