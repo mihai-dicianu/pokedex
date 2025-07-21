@@ -21,7 +21,6 @@ import { injectTwHostClass } from 'util/inject-tw-host-class.util';
                   @if (pokemon.pokemon.name !== this.pokemon().name) {
     
                     <option 
-                      (click)="navigateToPokemon(pokemon.pokemon.name)" 
                       [value]="pokemon.pokemon.name"
                     >
                       {{pokemon.pokemon.name}}
@@ -52,13 +51,12 @@ export class PokemonAbilitiesComponent {
   }
 
   async ngOnChanges() {
-    const abilities = await this.pokedex.getAbilityByName(this.pokemon().abilities.map(ability => ability.ability.name));
-    this.abilities = abilities;
-  }
-
-  navigateToPokemon(pokemon: string) {
-    console.log('Navigating to:', pokemon);
-    // Navigate to main route with auxiliary outlet
+    try {
+      const abilities = await this.pokedex.getAbilityByName(this.pokemon().abilities.map(ability => ability.ability.name));
+      this.abilities = abilities;
+    } catch (error) {
+      console.error('Error loading abilities:', error);
+    }
   }
 
   onPokemonSelect(event: Event): void {
