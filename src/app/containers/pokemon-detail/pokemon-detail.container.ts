@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PokemonAbilitiesComponent } from 'components/pokemon-abilities/pokemon-abilities.component';
 import { PokemonStatsComponent } from 'components/pokemon-stats/pokemon-stats.component';
 import { Pokedex, Pokemon } from 'pokeapi-js-wrapper';
+import { Subscription } from 'rxjs';
 import { ClickSoundDirective } from 'util/click-sound.directive';
 import { injectTwHostClass } from 'util/inject-tw-host-class.util';
 import { PokemonInfoComponent } from '../../components/pokemon-info/pokemon-info.component';
@@ -45,11 +46,11 @@ import { PokemonInfoComponent } from '../../components/pokemon-info/pokemon-info
 
         <div class="grow overflow-y-auto bg-black text-white p-2 rounded-md space-y-4">
             @if(loading()) {
-                        <div class="flex justify-center items-center h-full">
-                            <div class="text-white text-xl">Loading...</div>
-                        </div>
-                    } @else {    
-            @if (pokemon()) {
+                <div class="flex justify-center items-center h-full">
+                    <div class="text-white text-xl">Loading...</div>
+                </div>
+            } @else {    
+                @if (pokemon()) {
                     @if (tabNumber() === 0) {
                         <app-pokemon-abilities [pokemon]="pokemon()" />
                     } @else if (tabNumber() === 1) {
@@ -58,12 +59,14 @@ import { PokemonInfoComponent } from '../../components/pokemon-info/pokemon-info
                         <!-- <app-pokemon-moves [pokemon]="pokemon()" /> -->
                     }
                 }
-           }
+            }
         </div>
     `,
 })
-export class PokemonDetailContainer implements OnInit{
+export class PokemonDetailContainer implements OnInit, OnDestroy {
     private readonly route = inject(ActivatedRoute);
+    private routeSubscription?: Subscription;
+    
     readonly pokemon = signal<Pokemon | undefined>(undefined);
     readonly loading = signal(true);
     readonly error = signal<Error | null>(null);
@@ -75,7 +78,7 @@ export class PokemonDetailContainer implements OnInit{
     }
 
     ngOnInit(): void {
-        this.route.paramMap.subscribe(params => {
+        this.routeSubscription = this.route.paramMap.subscribe(params => {
             const pokemonId = params.get('pokemonId');
             if (pokemonId) {
                 this.loadPokemon(pokemonId);
@@ -84,6 +87,12 @@ export class PokemonDetailContainer implements OnInit{
                 this.loading.set(false);
             }
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.routeSubscription) {
+            this.routeSubscription.unsubscribe();
+        }
     }
 
     async loadPokemon(pokemonId: string) {
