@@ -44,15 +44,21 @@ import { PokemonInfoComponent } from '../../components/pokemon-info/pokemon-info
         </div>
 
         <div class="grow overflow-y-auto bg-black text-white p-2 rounded-md space-y-4">
+            @if(loading()) {
+                        <div class="flex justify-center items-center h-full">
+                            <div class="text-white text-xl">Loading...</div>
+                        </div>
+                    } @else {    
             @if (pokemon()) {
-                @if (tabNumber() === 0) {
-                    <app-pokemon-abilities [pokemon]="pokemon()" />
-                } @else if (tabNumber() === 1) {
-                    <app-pokemon-stats [pokemon]="pokemon()" />
-                } @else if (tabNumber() === 2) {
-                    <!-- <app-pokemon-moves [pokemon]="pokemon()" /> -->
+                    @if (tabNumber() === 0) {
+                        <app-pokemon-abilities [pokemon]="pokemon()" />
+                    } @else if (tabNumber() === 1) {
+                        <app-pokemon-stats [pokemon]="pokemon()" />
+                    } @else if (tabNumber() === 2) {
+                        <!-- <app-pokemon-moves [pokemon]="pokemon()" /> -->
+                    }
                 }
-            }
+           }
         </div>
     `,
 })
