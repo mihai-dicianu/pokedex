@@ -22,23 +22,30 @@ import { PokemonListItemComponent } from '../pokemon-list-item/pokemon-list-item
         </header>
 
         <div class="section-wrapper max-h-[calc(100%-76px)] flex flex-col flex-grow p-8 pt-0 -mt-12 bg-[#d71f06] rounded-bl-4xl">
-            <section class="flex flex-col bg-black text-white flex-grow overflow-auto py-12 px-2 rounded-4xl rounded-bl-2xl rounded-tr-none shadow-[inset_0_-1px_2px_3px_#808080]">
-                @for (pokemon of pokemonList(); let index = $index; track pokemon.name) {
-                    <app-pokemon-list-item clickSound [index]="$index + offset()" [pokemon]="pokemon" />
-                }
 
-            </section>
-            <div class="flex flex-row justify-between items-center mt-4 text-white">
-                <button clickSound class="big-button blue" (click)="onPreviousPage.emit()">
-                    <span class="text-2xl font-bold">
-                        -
-                    </span>
-                </button>
-                Showing {{ offset() + 1 }} - {{ offset() + 20 }} of {{ count() }}
-                <button clickSound class="big-button blue" (click)="onNextPage.emit()">
-                    <span class="text-2xl font-bold">+</span>
-                </button>
-            </div>
+                <section class="flex flex-col bg-black text-white flex-grow overflow-auto py-12 px-2 rounded-4xl rounded-bl-2xl rounded-tr-none shadow-[inset_0_-1px_2px_3px_#808080]">
+                    @if (pokemonList().length === 0) {
+                        <ng-content></ng-content>
+                    }
+                    @else {    
+                        @for (pokemon of pokemonList(); let index = $index; track pokemon.name) {
+                            <app-pokemon-list-item clickSound [index]="$index + offset()" [pokemon]="pokemon" />
+                        }
+                    }
+                    
+                </section>
+                <div class="flex flex-row justify-between items-center mt-4 text-white">
+                    <button [disabled]="offset() === 0 || pokemonList().length === 0" clickSound class="big-button blue" (click)="onPreviousPage.emit()">
+                        <span class="text-2xl font-bold">
+                            -
+                        </span>
+                    </button>
+                    Showing {{ offset() + 1 }} - {{ offset() + 20 }} of {{ count() }}
+                    <button [disabled]="offset() + 20 >= count() || pokemonList().length === 0" clickSound class="big-button blue" (click)="onNextPage.emit()">
+                        <span class="text-2xl font-bold">+</span>
+                    </button>
+                </div>
+            
         </div>
 
         <footer>

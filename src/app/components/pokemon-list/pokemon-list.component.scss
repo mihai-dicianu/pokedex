@@ -36,6 +36,10 @@ nav {
 .big-button:hover {
     background: radial-gradient(#9af0ff, #00d0ff);
 }
+.big-button:disabled {
+    background: gray;
+    cursor: not-allowed;
+}
 
 
 .small-button {
