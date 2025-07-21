@@ -7,11 +7,12 @@ import { Pokedex, Pokemon } from 'pokeapi-js-wrapper';
 import { Subscription } from 'rxjs';
 import { ClickSoundDirective } from 'util/click-sound.directive';
 import { injectTwHostClass } from 'util/inject-tw-host-class.util';
+import { PokemonEvolutionComponent } from '../../components/pokemon-evolution/pokemon-evolution.component';
 import { PokemonInfoComponent } from '../../components/pokemon-info/pokemon-info.component';
 
 @Component({
     selector: 'app-pokemon-detail',
-    imports: [PokemonInfoComponent, CommonModule, PokemonAbilitiesComponent, PokemonStatsComponent, ClickSoundDirective],
+    imports: [PokemonInfoComponent, CommonModule, PokemonAbilitiesComponent, PokemonStatsComponent, ClickSoundDirective, PokemonEvolutionComponent],
     template: `
         <div class="w-full bg-black text-white h-60 min-h-60 p-2 rounded-md shadow-inner">
             @if (loading()) {
@@ -39,24 +40,24 @@ import { PokemonInfoComponent } from '../../components/pokemon-info/pokemon-info
         </div>
 
         <div class="flex flex-row *:flex-auto gap-2">
-            <button clickSound class="bg-cyan-300 p-2 rounded-md cursor-pointer" [class.bg-cyan-500]="tabNumber() === 0" (click)="tabNumber.set(0)">Abilities</button>
-            <button clickSound class="bg-cyan-300 p-2 rounded-md cursor-pointer" [class.bg-cyan-500]="tabNumber() === 1" (click)="tabNumber.set(1)">Stats</button>
-            <button clickSound class="bg-cyan-300 p-2 rounded-md cursor-pointer" [class.bg-cyan-500]="tabNumber() === 2" (click)="tabNumber.set(2)">Moves</button>
+            <button clickSound class="bg-cyan-300 p-2 rounded-md cursor-pointer" [class.bg-cyan-500]="tabNumber() === 0" (click)="tabNumber.set(0)">Evolution</button>
+            <button clickSound class="bg-cyan-300 p-2 rounded-md cursor-pointer" [class.bg-cyan-500]="tabNumber() === 1" (click)="tabNumber.set(1)">Abilities</button>
+            <button clickSound class="bg-cyan-300 p-2 rounded-md cursor-pointer" [class.bg-cyan-500]="tabNumber() === 2" (click)="tabNumber.set(2)">Stats</button>
         </div>
 
         <div class="grow overflow-y-auto bg-black text-white p-2 rounded-md space-y-4">
             @if(loading()) {
                 <div class="flex justify-center items-center h-full">
-                    <div class="text-white text-xl">Loading...</div>
+                    <div class="text-white text-xl">Loading Pokémon details...</div>
                 </div>
             } @else {    
                 @if (pokemon()) {
                     @if (tabNumber() === 0) {
-                        <app-pokemon-abilities [pokemon]="pokemon()" />
+                        <app-pokemon-evolution [pokemon]="pokemon()" />
                     } @else if (tabNumber() === 1) {
-                        <app-pokemon-stats [pokemon]="pokemon()" />
+                        <app-pokemon-abilities [pokemon]="pokemon()" />
                     } @else if (tabNumber() === 2) {
-                        <!-- <app-pokemon-moves [pokemon]="pokemon()" /> -->
+                        <app-pokemon-stats [pokemon]="pokemon()" />
                     }
                 }
             }
