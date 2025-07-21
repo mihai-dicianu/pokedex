@@ -17,7 +17,7 @@ import { injectTwHostClass } from 'util/inject-tw-host-class.util';
         <span class="text-2xl font-bold">{{ability.name.replace('-', ' ') | titlecase}}</span>
         <select (change)="onPokemonSelect($event)" class="bg-black underline text-white inline-block">
                 <option selected disabled>Other pokemon</option>
-                @for (pokemon of ability.pokemon; track pokemon.pokemon.name) {
+                @for (pokemon of ability.pokemon; track $index) {
                   @if (pokemon.pokemon.name !== this.pokemon().name) {
     
                     <option 
