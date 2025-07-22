@@ -88,11 +88,9 @@ export class PokemonEvolutionComponent implements OnInit {
             
             const chain = await this.pokedex.resource(species.evolution_chain.url);
             this.evolutionChain.set(chain);
-            console.log(chain);
             
             const nodes = await this.buildEvolutionNodes(chain.chain);
             this.evolutionNodes.set(nodes);
-            console.log(nodes);
         } catch (error) {
             console.error('Error loading evolution chain:', error);
         }
