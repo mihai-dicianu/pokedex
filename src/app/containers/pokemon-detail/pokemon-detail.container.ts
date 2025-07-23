@@ -30,8 +30,30 @@ import { PokemonInfoComponent } from '../../components/pokemon-info/pokemon-info
                         Retry
                     </button>
                 </div>
+            } @else if (pokemon() && !prompted()) {
+                <div class="flex flex-col items-center justify-center h-full text-white">
+                    <div class="text-xl mb-4">🔊 Sound Level Confirmation</div>
+                    <div class="text-sm mb-6 text-center">
+                        This app will play Pokémon cry sounds.<br>
+                        Please lower your volume.
+                    </div>
+                    <div class="flex gap-2">
+                        <button 
+                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg"
+                            (click)="confirmSound()"
+                        >
+                            ✅ Confirm
+                        </button>
+                        <button
+                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg"
+                            (click)="disableSound()"
+                        >
+                            ❌ Disable
+                        </button>
+                    </div>
+                </div>
             } @else if (pokemon()) {
-                <app-pokemon-info [pokemonInfo]="pokemon()" />
+                <app-pokemon-info [pokemonInfo]="pokemon()" [soundConfirmed]="soundConfirmed()" (onToggleSound)="onToggleSound()"/>
             } @else {
                 <div class="flex justify-center items-center h-full">
                     <div class="text-white text-xl">No Pokémon found</div>
@@ -51,7 +73,7 @@ import { PokemonInfoComponent } from '../../components/pokemon-info/pokemon-info
                     <div class="text-white text-xl">Loading Pokémon details...</div>
                 </div>
             } @else {    
-                @if (pokemon()) {
+                @if (pokemon() && prompted()) {
                     @if (tabNumber() === 0) {
                         <app-pokemon-evolution [pokemon]="pokemon()" />
                     } @else if (tabNumber() === 1) {
@@ -71,6 +93,8 @@ export class PokemonDetailContainer implements OnInit, OnDestroy {
     readonly pokemon = signal<Pokemon | undefined>(undefined);
     readonly loading = signal(true);
     readonly error = signal<Error | null>(null);
+    readonly prompted = signal(false);
+    readonly soundConfirmed = signal(false);
     readonly pokedex = new Pokedex();
     readonly tabNumber = signal(0);
 
@@ -94,6 +118,20 @@ export class PokemonDetailContainer implements OnInit, OnDestroy {
         if (this.routeSubscription) {
             this.routeSubscription.unsubscribe();
         }
+    }
+
+    confirmSound(): void {
+        this.soundConfirmed.set(true);
+        this.prompted.set(true);
+    }
+
+    onToggleSound(): void {
+        this.soundConfirmed.set(!this.soundConfirmed());
+    }
+
+    disableSound(): void {
+        this.soundConfirmed.set(false);
+        this.prompted.set(true);
     }
 
     async loadPokemon(pokemonId: string) {

@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, input, output, SimpleChanges } from '@angular/core';
 import { Pokemon } from 'pokeapi-js-wrapper';
+import { ClickSoundDirective } from 'util/click-sound.directive';
 import { injectTwHostClass } from 'util/inject-tw-host-class.util';
 import { TypewriterComponent } from '../../typewriter/typewriter.component';
 
 @Component({
     selector: 'app-pokemon-info',
-    imports: [CommonModule, TypewriterComponent],
+    imports: [CommonModule, TypewriterComponent, ClickSoundDirective],
     template: `
         <app-typewriter class="text-4xl font-bold block mb-4" [text]="pokemonInfo()?.name.replace('-', ' ') | titlecase" />
 
@@ -24,6 +25,14 @@ import { TypewriterComponent } from '../../typewriter/typewriter.component';
             <app-typewriter [text]="'base XP: ' + pokemonInfo()?.base_experience.toString()" />
         }
 
+        <button clickSound class="mt-2 bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded" (click)=" onToggleSound.emit()">
+            @if (soundConfirmed()) {
+                🔊
+            } @else {
+                🔇
+            }
+        </button>
+
         <div class="absolute top-0 right-0 h-24 w-24">
             @if (pokemonInfo(); as pokemonInfo) {
                 <div
@@ -36,6 +45,8 @@ import { TypewriterComponent } from '../../typewriter/typewriter.component';
 })
 export class PokemonInfoComponent {
     readonly pokemonInfo = input<Pokemon>();
+    readonly soundConfirmed = input<boolean>(false);
+    readonly onToggleSound = output<void>();
     
     typeColors: { [key: string]: string } = {
         'normal': '#A8A878',
@@ -60,5 +71,22 @@ export class PokemonInfoComponent {
 
     constructor() {
         injectTwHostClass(() => 'relative block w-full h-full max-w-full');
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if(this.soundConfirmed() && changes['pokemonInfo'] && changes['pokemonInfo'].currentValue) {
+            this.playPokemonSound();
+        }
+    }
+
+    playPokemonSound(): void {
+        const pokemon = this.pokemonInfo();
+        
+        if (pokemon?.cries?.latest) {
+            const audio = new Audio(pokemon.cries.latest);
+            audio.play().catch((error) => {
+                console.error('Failed to play Pokemon cry:', error);
+            });
+        } 
     }
 }
