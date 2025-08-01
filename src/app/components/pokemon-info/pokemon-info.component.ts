@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, output, SimpleChanges } from '@angular/core';
+import { Component, effect, input, output, SimpleChanges } from '@angular/core';
 import { Pokemon } from 'pokeapi-js-wrapper';
 import { ClickSoundDirective } from 'util/click-sound.directive';
 import { injectTwHostClass } from 'util/inject-tw-host-class.util';
@@ -71,12 +71,11 @@ export class PokemonInfoComponent {
 
     constructor() {
         injectTwHostClass(() => 'relative block w-full h-full max-w-full');
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        if(this.soundConfirmed() && changes['pokemonInfo'] && changes['pokemonInfo'].currentValue) {
-            this.playPokemonSound();
-        }
+        effect( () => {
+            if(this.soundConfirmed()) {
+                this.playPokemonSound();
+            }
+        })
     }
 
     playPokemonSound(): void {

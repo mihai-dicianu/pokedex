@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { PokemonAbilitiesComponent } from 'components/pokemon-abilities/pokemon-abilities.component';
 import { PokemonStatsComponent } from 'components/pokemon-stats/pokemon-stats.component';
@@ -86,7 +87,7 @@ import { PokemonInfoComponent } from '../../components/pokemon-info/pokemon-info
         </div>
     `,
 })
-export class PokemonDetailContainer implements OnInit, OnDestroy {
+export class PokemonDetailContainer {
     private readonly route = inject(ActivatedRoute);
     private routeSubscription?: Subscription;
     
@@ -100,24 +101,16 @@ export class PokemonDetailContainer implements OnInit, OnDestroy {
 
     constructor() {
         injectTwHostClass(() => 'flex flex-col gap-4 p-5 pt-20 max-w-full overflow-hidden');
-    }
-
-    ngOnInit(): void {
-        this.routeSubscription = this.route.paramMap.subscribe(params => {
-            const pokemonId = params.get('pokemonId');
+        let paramMap = toSignal(this.route.paramMap)
+        effect(() => {
+            const pokemonId = paramMap().get('pokemonId');
             if (pokemonId) {
                 this.loadPokemon(pokemonId);
             } else {
                 this.error.set(new Error('No Pokémon ID provided'));
                 this.loading.set(false);
             }
-        });
-    }
-
-    ngOnDestroy(): void {
-        if (this.routeSubscription) {
-            this.routeSubscription.unsubscribe();
-        }
+        })
     }
 
     confirmSound(): void {
